@@ -35,6 +35,22 @@
 				transition: transform 0.2s ease;
 				cursor: zoom-in;
 			}
+			.intro-bg {
+				position: absolute;
+				inset: 0;
+				background-size: cover;
+				background-position: center;
+				opacity: 0;
+				transition: opacity 1.2s ease;
+				z-index: 0;
+			}
+			.intro-bg.is-visible {
+				opacity: 1;
+			}
+			#intro > *:not(.intro-bg) {
+				position: relative;
+				z-index: 1;
+			}
 		</style>
 	</head>
 	<body class="is-preload">
@@ -56,7 +72,9 @@
 					</header>
 
 				<!-- Intro -->
-					<section id="intro" class="fade-in" style="background-image: url('images/fulls/01.jpg'); background-size: cover; background-position: center; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; text-align: center; position: relative;">
+					<section id="intro" class="fade-in" style="height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; text-align: center; position: relative; overflow: hidden;">
+						<div class="intro-bg intro-bg-a"></div>
+						<div class="intro-bg intro-bg-b"></div>
 						<h1 class="fade-in" style="font-size: 4em; font-weight: bold; text-transform: uppercase; margin: 0;">Captura un momento que dure toda una vida </h1>
 						<p class="fade-in" style="font-size: 1.5em; margin-top: 20px;">En AG photography te ayudamos con eventos, sesiones, bodas y más
 						<a href="#main" id="scroll-down-btn" style="position: absolute; bottom: 50px; font-size: 2em; color: white; text-decoration: none;">↓</a>
@@ -66,7 +84,7 @@
 					<div id="main">
 
 						<article class="thumb">
-							<a href="_MG_6388.jpg" class="image"><img src="_MG_6388.jpg" alt="AG Photography" /></a>
+							<a href="images/fulls/35.jpg" class="image"><img src="images/thumbs/35.jpg" alt="AG Photography" /></a>
 							<h2></h2>
 							<p></p>
 						</article>
@@ -270,14 +288,14 @@
 				<!-- Imagen actual -->
 				<div style="position: relative; width: 100%; display: flex; align-items: center; justify-content: center;">
 					<img id="currentAlbumImage" src="" alt="Album image" style="max-width: 100%; max-height: 70vh; object-fit: contain; cursor: zoom-in; transition: transform 0.2s ease;">
-					<button id="zoomInBtn" style="position: absolute; bottom: 20px; right: 20px; padding: 10px 20px; background-color: rgba(255,255,255,0.2); color: white; border: 2px solid white; border-radius: 5px; cursor: pointer; font-size: 14px; z-index: 101;">Zoom</button>
+					<button id="zoomInBtn" style="position: absolute; bottom: 20px; right: 20px; padding: 10px 20px; background-color: rgba(255,255,255,0); color: white; border: 2px solid white; border-radius: 5px; cursor: pointer; font-size: 14px; z-index: 101;">Zoom</button>
 				</div>
 				
 				<!-- Controles -->
-				<div style="margin-top: 20px; display: flex; gap: 15px; justify-content: center; color: white;">
-					<button id="prevImageBtn" style="padding: 10px 20px; background-color: rgba(255,255,255,0.2); color: white; border: 2px solid white; border-radius: 5px; cursor: pointer; font-size: 14px;">← Anterior</button>
-					<span id="imageCounter" style="padding: 10px 20px; background-color: rgba(255,255,255,0.2); border-radius: 5px;">1 / 1</span>
-					<button id="nextImageBtn" style="padding: 10px 20px; background-color: rgba(255,255,255,0.2); color: white; border: 2px solid white; border-radius: 5px; cursor: pointer; font-size: 14px;">Siguiente →</button>
+				<div style="margin-top: 10px; display: flex; gap: 10px; justify-content: center; color: white;">
+					<button id="prevImageBtn" style="padding: 0px 10px; background-color: rgba(255,255,255,0); color: white; border: 2px solid white; border-radius: 5px; cursor: pointer; font-size: 24px;"> << </button>
+					<span id="imageCounter" style="padding: 10px 10px; background-color: rgba(255,255,255,0); border-radius: 5px; font-size: 24px; font-weight: bold;">1 / 1</span>
+					<button id="nextImageBtn" style="padding: 0px 10px; background-color: rgba(255,255,255,0); color: white; border: 2px solid white; border-radius: 5px; cursor: pointer; font-size: 24px;"> >> </button>
 				</div>
 			</div>
 		</div>
@@ -490,6 +508,43 @@
 				$('.poptrox-popup .pic img').each(function(){ setScale($(this), 1); });
 			});
 		})();
+		</script>
+		<script>
+			// Carrusel de fondo para el intro con fade suave
+			window.addEventListener('load', function() {
+				const layerA = document.querySelector('#intro .intro-bg-a');
+				const layerB = document.querySelector('#intro .intro-bg-b');
+				if (!layerA || !layerB) return;
+
+				const images = [
+					'images/fulls/01.jpg', <!-- @alan aqui cambia las imagenes que quieras -->
+					'images/fulls/02.jpg',
+					'images/fulls/03.jpg',
+					'images/fulls/04.jpg'
+				];
+
+				let introIndex = 0;
+				let showA = true;
+
+				layerA.style.backgroundImage = "url('" + images[introIndex] + "')";
+				layerA.classList.add('is-visible');
+
+				window.setInterval(() => {
+					introIndex = (introIndex + 1) % images.length;
+					const nextUrl = "url('" + images[introIndex] + "')";
+
+					if (showA) {
+						layerB.style.backgroundImage = nextUrl;
+						layerB.classList.add('is-visible');
+						layerA.classList.remove('is-visible');
+					} else {
+						layerA.style.backgroundImage = nextUrl;
+						layerA.classList.add('is-visible');
+						layerB.classList.remove('is-visible');
+					}
+					showA = !showA;
+				}, 4000);
+			});
 		</script>
 
 	</body>
