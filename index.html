@@ -84,6 +84,21 @@
 				position: relative;
 				z-index: 1;
 			}
+			@media (max-width: 600px) {
+				.poptrox-popup .closer,
+				.poptrox-popup .nav-previous,
+				.poptrox-popup .nav-next {
+					width: 80px !important;
+					height: 80px !important;
+					background-size: 3.5em !important;
+				}
+				#closeAlbumViewer {
+					font-size: 42px !important;
+					padding: 10px 14px;
+					background: rgba(0, 0, 0, 0.4);
+					border-radius: 8px;
+				}
+			}
 		</style>
 	</head>
 	<body class="is-preload">
@@ -493,22 +508,31 @@
 		// Hover zoom + pan vertical en el visor del álbum
 		$('#currentAlbumImage')
 			.on('mouseenter', function() {
+				if ('ontouchstart' in window || navigator.maxTouchPoints > 0) return;
 				currentImageZoom = 2;
 				$(this).css('transform', `scale(${currentImageZoom})`);
 				$(this).css('cursor', 'zoom-out');
 			})
 			.on('mouseleave', function() {
+				if ('ontouchstart' in window || navigator.maxTouchPoints > 0) return;
 				currentImageZoom = 1;
 				$(this).css('transform', `scale(${currentImageZoom}) translate(0px, 0px)`);
 				$(this).css('cursor', 'zoom-in');
 			})
 			.on('mousemove', function(e) {
+				if ('ontouchstart' in window || navigator.maxTouchPoints > 0) return;
 				if (currentImageZoom <= 1) return;
 				const rect = this.getBoundingClientRect();
 				const relY = (e.clientY - rect.top) / rect.height;
 				const maxTy = (rect.height * (currentImageZoom - 1)) / 2;
 				const ty = (relY - 0.5) * 2 * maxTy;
 				$(this).css('transform', `translate(0px, ${ty.toFixed(2)}px) scale(${currentImageZoom})`);
+			})
+			.on('touchstart', function(e) {
+				e.preventDefault();
+				currentImageZoom = currentImageZoom === 1 ? 2 : 1;
+				$(this).css('transform', `scale(${currentImageZoom}) translate(0px, 0px)`);
+				$(this).css('cursor', currentImageZoom === 1 ? 'zoom-in' : 'zoom-out');
 			});
 
 		// Cerrar visor de álbum
@@ -530,6 +554,7 @@
 			const minScale = 1;
 			const maxScale = 3;
 			const step = 0.15;
+			const isTouch = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
 
 			function setScale(img, scale) {
 				const clamped = Math.max(minScale, Math.min(maxScale, scale));
@@ -554,21 +579,24 @@
 				img.css('transform', 'translate(' + tx.toFixed(2) + 'px,' + ty.toFixed(2) + 'px) scale(' + current.toFixed(2) + ')');
 			}
 
-			// Evita que el click/touch sobre la imagen cierre el popup
-			$(document).on('mousedown touchstart', '.poptrox-popup .pic, .poptrox-popup .pic img', function(e) {
-				e.preventDefault();
-				e.stopImmediatePropagation();
-			});
-			$(document).on('click', '.poptrox-popup .pic, .poptrox-popup .pic img', function(e) {
-				e.preventDefault();
-				e.stopImmediatePropagation();
-			});
+			// Evita que el click sobre la imagen cierre el popup (desktop)
+			if (!isTouch) {
+				$(document).on('mousedown', '.poptrox-popup .pic, .poptrox-popup .pic img', function(e) {
+					e.preventDefault();
+					e.stopImmediatePropagation();
+				});
+				$(document).on('click', '.poptrox-popup .pic, .poptrox-popup .pic img', function(e) {
+					e.preventDefault();
+					e.stopImmediatePropagation();
+				});
+			}
 			// Evita que los botones de navegación cierren el popup
 			$(document).on('click', '.poptrox-popup .nav-previous, .poptrox-popup .nav-next', function(e) {
 				e.stopPropagation();
 			});
-			// Click para hacer zoom en el lightbox
+			// Zoom en el lightbox del grid
 			$(document).on('click', '.poptrox-popup .pic img', function(e) {
+				if (isTouch) return;
 				e.preventDefault();
 				e.stopImmediatePropagation();
 				const img = $(this);
@@ -576,31 +604,39 @@
 				const next = current === 1 ? 2 : 1;
 				setScale(img, next);
 			});
-			// Hover zoom solo para el lightbox del grid
-			$(document).on('mouseenter', '.poptrox-popup .pic img', function() {
+			$(document).on('touchstart', '.poptrox-popup .pic img', function(e) {
+				if (!isTouch) return;
+				e.preventDefault();
+				e.stopImmediatePropagation();
 				const img = $(this);
-				setScale(img, 2);
+				const current = parseFloat(img.attr('data-zoom')) || 1;
+				const next = current === 1 ? 2 : 1;
+				setScale(img, next);
 			});
-			$(document).on('mouseleave', '.poptrox-popup .pic img', function() {
-				const img = $(this);
-				setScale(img, 1);
-			});
-			// Pan con el mouse cuando está en zoom (solo lightbox del grid)
-			$(document).on('mousemove', '.poptrox-popup .pic', function(e) {
-				const img = $(this).find('img');
-				if (img.length === 0) return;
-				const scale = parseFloat(img.attr('data-zoom')) || 1;
-				if (scale <= 1) return;
+			// Hover zoom y pan (solo desktop)
+			if (!isTouch) {
+				$(document).on('mouseenter', '.poptrox-popup .pic img', function() {
+					const img = $(this);
+					setScale(img, 2);
+				});
+				$(document).on('mouseleave', '.poptrox-popup .pic img', function() {
+					const img = $(this);
+					setScale(img, 1);
+				});
+				$(document).on('mousemove', '.poptrox-popup .pic', function(e) {
+					const img = $(this).find('img');
+					if (img.length === 0) return;
+					const scale = parseFloat(img.attr('data-zoom')) || 1;
+					if (scale <= 1) return;
 
-				const rect = this.getBoundingClientRect();
-				const relY = (e.clientY - rect.top) / rect.height;
+					const rect = this.getBoundingClientRect();
+					const relY = (e.clientY - rect.top) / rect.height;
+					const maxTy = (rect.height * (scale - 1)) / 2;
+					const ty = (relY - 0.5) * 2 * maxTy;
 
-				const maxTy = (rect.height * (scale - 1)) / 2;
-
-				const ty = (relY - 0.5) * 2 * maxTy;
-
-				setPan(img, 0, ty);
-			});
+					setPan(img, 0, ty);
+				});
+			}
 
 			// Zoom con la rueda
 			$(document).on('wheel', '.poptrox-popup .pic img', function(e) {
