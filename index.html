@@ -115,12 +115,28 @@
 				}
 				#prevImageBtn,
 				#nextImageBtn {
-					padding: 14px 18px !important;
-					font-size: 28px !important;
+					width: 90px !important;
+					height: 90px !important;
+					background-size: 4em !important;
 				}
 				#imageCounter {
 					font-size: 18px !important;
 				}
+			}
+			#prevImageBtn,
+			#nextImageBtn {
+				width: 6em;
+				height: 8em;
+				background-image: url("assets/css/images/arrow.svg");
+				background-position: center;
+				background-repeat: no-repeat;
+				background-size: 5em;
+				background-color: transparent;
+				border: none;
+				cursor: pointer;
+			}
+			#prevImageBtn {
+				transform: scaleX(-1);
 			}
 		</style>
 	</head>
@@ -365,9 +381,9 @@
 				
 				<!-- Controles -->
 				<div style="margin-top: 10px; display: flex; gap: 10px; justify-content: center; color: white; position: relative; z-index: 5;">
-					<button id="prevImageBtn" style="padding: 0px 10px; background-color: rgba(255,255,255,0); color: white; border: 2px solid white; border-radius: 5px; cursor: pointer; font-size: 24px;"> << </button>
+					<button id="prevImageBtn" aria-label="Imagen anterior"></button>
 					<span id="imageCounter" style="padding: 10px 10px; background-color: rgba(255,255,255,0); border-radius: 5px; font-size: 24px; font-weight: bold;">1 / 1</span>
-					<button id="nextImageBtn" style="padding: 0px 10px; background-color: rgba(255,255,255,0); color: white; border: 2px solid white; border-radius: 5px; cursor: pointer; font-size: 24px;"> >> </button>
+					<button id="nextImageBtn" aria-label="Siguiente imagen"></button>
 				</div>
 			</div>
 		</div>
