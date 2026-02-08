@@ -19,21 +19,54 @@
 				height: 85vh !important;
 				max-width: 1000px !important;
 				max-height: 700px !important;
+				overflow: hidden;
+				box-sizing: border-box;
 			}
 			.poptrox-popup .pic {
 				width: 100% !important;
 				height: 100% !important;
+				overflow: hidden;
 			}
 			.poptrox-popup img {
 				max-width: 100%;
 				max-height: 100%;
-				width: auto;
-				height: auto;
+				width: 100%;
+				height: 100%;
 				object-fit: contain;
+				display: block;
 				transform: scale(1);
 				transform-origin: center center;
 				transition: transform 0.2s ease;
 				cursor: zoom-in;
+			}
+			/* Asegura que la imagen quede por encima del overlay del popup */
+			.poptrox-popup {
+				background: rgba(31, 34, 36, 0.5) !important;
+				box-shadow: none !important;
+			}
+			.poptrox-popup:before {
+				opacity: 0.2 !important;
+				pointer-events: none;
+			}
+			.poptrox-popup .pic,
+			.poptrox-popup .pic img {
+				position: relative;
+				z-index: 3;
+			}
+			/* Permite ver el zoom cuando la imagen está ampliada */
+			.poptrox-popup.is-zoomed {
+				overflow: visible;
+			}
+			.poptrox-popup.is-zoomed .pic {
+				overflow: visible;
+			}
+			/* Muestra siempre los controles de navegación */
+			.poptrox-popup .closer,
+			.poptrox-popup .nav-previous,
+			.poptrox-popup .nav-next {
+				opacity: 1 !important;
+				pointer-events: auto;
+				z-index: 5;
 			}
 			.intro-bg {
 				position: absolute;
@@ -77,74 +110,74 @@
 						<div class="intro-bg intro-bg-b"></div>
 						<h1 class="fade-in" style="font-size: 4em; font-weight: bold; text-transform: uppercase; margin: 0;">Captura un momento que dure toda una vida </h1>
 						<p class="fade-in" style="font-size: 1.5em; margin-top: 20px;">En AG photography te ayudamos con eventos, sesiones, bodas y más
-						<a href="#main" id="scroll-down-btn" style="position: absolute; bottom: 50px; font-size: 2em; color: white; text-decoration: none;">↓</a>
+						<a href="#main" id="scroll-down-btn" style="position: absolute; bottom: -150px; left: 50%; transform: translateX(-50%); font-size: 2em; color: white; text-decoration: none;">↓</a>
 					</section>
 
 				<!-- Main -->
 					<div id="main">
 
 						<article class="thumb">
-							<a href="images/fulls/35.jpg" class="image"><img src="images/thumbs/35.jpg" alt="AG Photography" /></a>
+							<a href="images/fulls/35.jpg" class="image"><img loading="lazy" decoding="async" src="images/thumbs/35.jpg" alt="AG Photography" /></a>
 							<h2></h2>
 							<p></p>
 						</article>
 						<article class="thumb">
-							<a href="images/fulls/01.jpg" class="image"><img src="images/thumbs/01.jpg" alt="" /></a>
+							<a href="images/fulls/01.jpg" class="image"><img loading="lazy" decoding="async" src="images/thumbs/01.jpg" alt="" /></a>
 							<h2></h2>
 							<p></p>
 						</article>
 						<article class="thumb">
-							<a href="images/fulls/02.jpg" class="image"><img src="images/thumbs/02.jpg" alt="" /></a>
+							<a href="images/fulls/02.jpg" class="image"><img loading="lazy" decoding="async" src="images/thumbs/02.jpg" alt="" /></a>
 							<h2></h2>
 							<p></p>
 						</article>
 						<article class="thumb">
-							<a href="images/fulls/03.jpg" class="image"><img src="images/thumbs/03.jpg" alt="" /></a>
+							<a href="images/fulls/03.jpg" class="image"><img loading="lazy" decoding="async" src="images/thumbs/03.jpg" alt="" /></a>
 							<h2></h2>
 							<p></p>
 						</article>
 						<article class="thumb">
-							<a href="images/fulls/04.jpg" class="image"><img src="images/thumbs/04.jpg" alt="" /></a>
+							<a href="images/fulls/04.jpg" class="image"><img loading="lazy" decoding="async" src="images/thumbs/04.jpg" alt="" /></a>
 							<h2></h2>
 							<p></p>
 						</article>
 						<article class="thumb">
-							<a href="images/fulls/05.jpg" class="image"><img src="images/thumbs/05.jpg" alt="" /></a>
+							<a href="images/fulls/05.jpg" class="image"><img loading="lazy" decoding="async" src="images/thumbs/05.jpg" alt="" /></a>
 							<h2></h2>
 							<p></p>
 						</article>
 						<article class="thumb">
-							<a href="images/fulls/06.jpg" class="image"><img src="images/thumbs/06.jpg" alt="" /></a>
+							<a href="images/fulls/06.jpg" class="image"><img loading="lazy" decoding="async" src="images/thumbs/06.jpg" alt="" /></a>
 							<h2></h2>
 							<p></p>
 						</article>
 						<article class="thumb">
-							<a href="images/fulls/07.jpg" class="image"><img src="images/thumbs/07.jpg" alt="" /></a>
+							<a href="images/fulls/07.jpg" class="image"><img loading="lazy" decoding="async" src="images/thumbs/07.jpg" alt="" /></a>
 							<h2></h2>
 							<p></p>
 						</article>
 						<article class="thumb">
-							<a href="images/fulls/08.jpg" class="image"><img src="images/thumbs/08.jpg" alt="" /></a>
+							<a href="images/fulls/08.jpg" class="image"><img loading="lazy" decoding="async" src="images/thumbs/08.jpg" alt="" /></a>
 							<h2></h2>
 							<p></p>
 						</article>
 						<article class="thumb">
-							<a href="images/fulls/09.jpg" class="image"><img src="images/thumbs/09.jpg" alt="" /></a>
+							<a href="images/fulls/09.jpg" class="image"><img loading="lazy" decoding="async" src="images/thumbs/09.jpg" alt="" /></a>
 							<h2></h2>
 							<p></p>
 						</article>
 						<article class="thumb">
-							<a href="images/fulls/10.jpg" class="image"><img src="images/thumbs/10.jpg" alt="" /></a>
+							<a href="images/fulls/10.jpg" class="image"><img loading="lazy" decoding="async" src="images/thumbs/10.jpg" alt="" /></a>
 							<h2></h2>
 							<p></p>
 						</article>
 						<article class="thumb">
-							<a href="images/fulls/11.jpg" class="image"><img src="images/thumbs/11.jpg" alt="" /></a>
+							<a href="images/fulls/11.jpg" class="image"><img loading="lazy" decoding="async" src="images/thumbs/11.jpg" alt="" /></a>
 							<h2></h2>
 							<p></p>
 						</article>
 						<article class="thumb">
-							<a href="images/fulls/12.jpg" class="image"><img src="images/thumbs/12.jpg" alt="" /></a>
+							<a href="images/fulls/12.jpg" class="image"><img loading="lazy" decoding="async" src="images/thumbs/12.jpg" alt="" /></a>
 							<h2></h2>
 							<p></p>
 						</article>
@@ -220,7 +253,7 @@
 					<h3 style="color: #fff; font-size: 1.5em; margin: 30px 0 20px 0; text-transform: uppercase; font-weight: bold;">¿Por qué elegirnos?</h3>
 					
 					<!-- Imagen de referencia -->
-					<img src="images/thumbs/01.jpg" alt="AG Photography" style="width: 100%; max-width: 300px; height: auto; border-radius: 8px; margin: 20px 0; display: block;">
+					<img loading="lazy" decoding="async" src="images/thumbs/01.jpg" alt="AG Photography" style="width: 100%; max-width: 300px; height: auto; border-radius: 8px; margin: 20px 0; display: block;">
 					
 					<!-- Texto ¿Por qué elegirnos? -->
 					<p style="color: #ccc; margin: 20px 0; font-size: 13px; line-height: 1.8;">
@@ -288,11 +321,10 @@
 				<!-- Imagen actual -->
 				<div style="position: relative; width: 100%; display: flex; align-items: center; justify-content: center;">
 					<img id="currentAlbumImage" src="" alt="Album image" style="max-width: 100%; max-height: 70vh; object-fit: contain; cursor: zoom-in; transition: transform 0.2s ease;">
-					<button id="zoomInBtn" style="position: absolute; bottom: 20px; right: 20px; padding: 10px 20px; background-color: rgba(255,255,255,0); color: white; border: 2px solid white; border-radius: 5px; cursor: pointer; font-size: 14px; z-index: 101;">Zoom</button>
 				</div>
 				
 				<!-- Controles -->
-				<div style="margin-top: 10px; display: flex; gap: 10px; justify-content: center; color: white;">
+				<div style="margin-top: 10px; display: flex; gap: 10px; justify-content: center; color: white; position: relative; z-index: 5;">
 					<button id="prevImageBtn" style="padding: 0px 10px; background-color: rgba(255,255,255,0); color: white; border: 2px solid white; border-radius: 5px; cursor: pointer; font-size: 24px;"> << </button>
 					<span id="imageCounter" style="padding: 10px 10px; background-color: rgba(255,255,255,0); border-radius: 5px; font-size: 24px; font-weight: bold;">1 / 1</span>
 					<button id="nextImageBtn" style="padding: 0px 10px; background-color: rgba(255,255,255,0); color: white; border: 2px solid white; border-radius: 5px; cursor: pointer; font-size: 24px;"> >> </button>
@@ -406,7 +438,7 @@
 			albums.forEach((album, index) => {
 				const albumHtml = `
 					<div class="album-card" style="cursor: pointer; text-align: center; transition: transform 0.2s ease; padding: 10px; border-radius: 8px;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-						<img src="${album.preview}" alt="${album.title}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 10px;">
+						<img loading="lazy" decoding="async" src="${album.preview}" alt="${album.title}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 10px;">
 						<h3 style="color: #fff; margin: 0; font-size: 16px;">${album.title}</h3>
 						<p style="color: #aaa; margin: 5px 0 0 0; font-size: 12px;">${album.images.length} fotos</p>
 					</div>
@@ -452,13 +484,32 @@
 			displayAlbumImage();
 		});
 
-		// Zoom
-		$('#zoomInBtn').on('click', () => {
+		// Click para hacer zoom en el visor del álbum
+		$('#currentAlbumImage').on('click', () => {
 			currentImageZoom = currentImageZoom === 1 ? 2 : 1;
 			$('#currentAlbumImage').css('transform', `scale(${currentImageZoom})`);
 			$('#currentAlbumImage').css('cursor', currentImageZoom === 1 ? 'zoom-in' : 'zoom-out');
-			$('#zoomInBtn').text(currentImageZoom === 1 ? 'Zoom' : 'Salir Zoom');
 		});
+		// Hover zoom + pan vertical en el visor del álbum
+		$('#currentAlbumImage')
+			.on('mouseenter', function() {
+				currentImageZoom = 2;
+				$(this).css('transform', `scale(${currentImageZoom})`);
+				$(this).css('cursor', 'zoom-out');
+			})
+			.on('mouseleave', function() {
+				currentImageZoom = 1;
+				$(this).css('transform', `scale(${currentImageZoom}) translate(0px, 0px)`);
+				$(this).css('cursor', 'zoom-in');
+			})
+			.on('mousemove', function(e) {
+				if (currentImageZoom <= 1) return;
+				const rect = this.getBoundingClientRect();
+				const relY = (e.clientY - rect.top) / rect.height;
+				const maxTy = (rect.height * (currentImageZoom - 1)) / 2;
+				const ty = (relY - 0.5) * 2 * maxTy;
+				$(this).css('transform', `translate(0px, ${ty.toFixed(2)}px) scale(${currentImageZoom})`);
+			});
 
 		// Cerrar visor de álbum
 		$('#closeAlbumViewer, #albumViewerModal').on('click', function(e) {
@@ -482,14 +533,73 @@
 
 			function setScale(img, scale) {
 				const clamped = Math.max(minScale, Math.min(maxScale, scale));
-				img.css('transform', 'scale(' + clamped.toFixed(2) + ')');
+				const tx = parseFloat(img.attr('data-tx')) || 0;
+				const ty = parseFloat(img.attr('data-ty')) || 0;
+				img.css('transform', 'translate(' + tx.toFixed(2) + 'px,' + ty.toFixed(2) + 'px) scale(' + clamped.toFixed(2) + ')');
 				img.attr('data-zoom', clamped.toFixed(2));
 				img.css('cursor', clamped > 1 ? 'zoom-out' : 'zoom-in');
+				const popup = img.closest('.poptrox-popup');
+				if (clamped > 1) {
+					popup.addClass('is-zoomed');
+				} else {
+					popup.removeClass('is-zoomed');
+					img.attr('data-tx', '0');
+					img.attr('data-ty', '0');
+				}
+			}
+			function setPan(img, tx, ty) {
+				const current = parseFloat(img.attr('data-zoom')) || 1;
+				img.attr('data-tx', tx.toFixed(2));
+				img.attr('data-ty', ty.toFixed(2));
+				img.css('transform', 'translate(' + tx.toFixed(2) + 'px,' + ty.toFixed(2) + 'px) scale(' + current.toFixed(2) + ')');
 			}
 
-			// Evita que el click sobre la imagen cierre el popup
+			// Evita que el click/touch sobre la imagen cierre el popup
+			$(document).on('mousedown touchstart', '.poptrox-popup .pic, .poptrox-popup .pic img', function(e) {
+				e.preventDefault();
+				e.stopImmediatePropagation();
+			});
 			$(document).on('click', '.poptrox-popup .pic, .poptrox-popup .pic img', function(e) {
+				e.preventDefault();
+				e.stopImmediatePropagation();
+			});
+			// Evita que los botones de navegación cierren el popup
+			$(document).on('click', '.poptrox-popup .nav-previous, .poptrox-popup .nav-next', function(e) {
 				e.stopPropagation();
+			});
+			// Click para hacer zoom en el lightbox
+			$(document).on('click', '.poptrox-popup .pic img', function(e) {
+				e.preventDefault();
+				e.stopImmediatePropagation();
+				const img = $(this);
+				const current = parseFloat(img.attr('data-zoom')) || 1;
+				const next = current === 1 ? 2 : 1;
+				setScale(img, next);
+			});
+			// Hover zoom solo para el lightbox del grid
+			$(document).on('mouseenter', '.poptrox-popup .pic img', function() {
+				const img = $(this);
+				setScale(img, 2);
+			});
+			$(document).on('mouseleave', '.poptrox-popup .pic img', function() {
+				const img = $(this);
+				setScale(img, 1);
+			});
+			// Pan con el mouse cuando está en zoom (solo lightbox del grid)
+			$(document).on('mousemove', '.poptrox-popup .pic', function(e) {
+				const img = $(this).find('img');
+				if (img.length === 0) return;
+				const scale = parseFloat(img.attr('data-zoom')) || 1;
+				if (scale <= 1) return;
+
+				const rect = this.getBoundingClientRect();
+				const relY = (e.clientY - rect.top) / rect.height;
+
+				const maxTy = (rect.height * (scale - 1)) / 2;
+
+				const ty = (relY - 0.5) * 2 * maxTy;
+
+				setPan(img, 0, ty);
 			});
 
 			// Zoom con la rueda
@@ -516,12 +626,26 @@
 				const layerB = document.querySelector('#intro .intro-bg-b');
 				if (!layerA || !layerB) return;
 
-				const images = [
-					'images/fulls/01.jpg', <!-- @alan aqui cambia las imagenes que quieras -->
+				const fullImages = Array.from(document.querySelectorAll('#main article.thumb a.image'))
+					.map(a => a.getAttribute('href'))
+					.filter(Boolean);
+				const thumbImages = Array.from(document.querySelectorAll('#main article.thumb a.image img'))
+					.map(img => img.getAttribute('src'))
+					.filter(Boolean);
+
+				const fallbackImages = [
+					'images/fulls/01.jpg',
 					'images/fulls/02.jpg',
 					'images/fulls/03.jpg',
 					'images/fulls/04.jpg'
 				];
+
+				const isMobile = window.matchMedia('(max-width: 600px)').matches;
+				const images = (isMobile && thumbImages.length > 0)
+					? thumbImages
+					: (fullImages.length > 0 ? fullImages : fallbackImages);
+
+				if (images.length === 0) return;
 
 				let introIndex = 0;
 				let showA = true;
