@@ -334,49 +334,146 @@
 		}
 		@keyframes sbPulse { 0%,100%{opacity:.25;transform:scaleY(.8)} 50%{opacity:1;transform:scaleY(1)} }
 
-		/* ── SECTION LABEL ───────────────────────────────────── */
-		.sec-label {
-			display: flex; align-items: center; gap: 1.25rem;
-			padding: 3rem 2.5rem 1.5rem;
+		/* ── PORTFOLIO INTRO ─────────────────────────────────── */
+		.port-intro {
+			display: flex;
+			align-items: flex-end;
+			justify-content: space-between;
+			padding: 5.5rem 2.5rem 2.5rem;
+			gap: 2rem;
 		}
-		.sec-label span {
-			font-size: .68rem; letter-spacing: .28em; text-transform: uppercase; color: var(--muted);
-			white-space: nowrap;
+		.pi-left { display: flex; flex-direction: column; gap: .8rem; }
+		.pi-rule { width: 28px; height: 1px; background: var(--accent); }
+		.pi-eyebrow { display: flex; align-items: baseline; gap: 1.1rem; }
+		.pi-num {
+			font-family: var(--serif);
+			font-size: 4.2rem; font-weight: 300; line-height: 1;
+			color: var(--accent); opacity: .18; letter-spacing: -.02em;
 		}
-		.sec-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+		.pi-label {
+			font-size: .64rem; letter-spacing: .34em;
+			text-transform: uppercase; color: var(--muted);
+		}
+		.pi-desc {
+			max-width: 300px;
+			font-size: .84rem; color: rgba(237,232,224,.35);
+			letter-spacing: .03em; text-align: right; line-height: 1.85;
+		}
+		@media (max-width: 736px) {
+			.port-intro { flex-direction: column; align-items: flex-start; padding: 3.5rem 1.5rem 1.8rem; }
+			.pi-desc { text-align: left; max-width: 100%; }
+		}
 
-		/* ── GRID ENHANCEMENTS ───────────────────────────────── */
-		#main .thumb > .image {
-			transition: transform .65s var(--ease) !important;
+		/* ── GRID ────────────────────────────────────────────── */
+		#main {
+			display: grid !important;
+			grid-template-columns: repeat(3, 1fr) !important;
+			gap: 3px !important;
+			padding: 0 !important;
+			width: auto !important;
+			max-width: none !important;
+			position: static !important;
+			overflow: visible !important;
+		}
+		#main .thumb {
+			position: relative !important;
+			overflow: hidden !important;
+			aspect-ratio: 3/4 !important;
+			cursor: none !important;
+			width: auto !important;
+			height: auto !important;
+			float: none !important;
+			left: auto !important;
+			top: auto !important;
+			padding: 0 !important;
+			opacity: 0;
+			transform: translateY(26px);
+			transition: opacity .75s var(--ease), transform .75s var(--ease);
+		}
+		#main .thumb.ag-feat {
+			grid-column: span 2 !important;
+			aspect-ratio: 16/11 !important;
+		}
+		#main .thumb.vis {
+			opacity: 1 !important;
+			transform: none !important;
+		}
+		#main .thumb:nth-child(3n+2) { transition-delay: 90ms; }
+		#main .thumb:nth-child(3n+3) { transition-delay: 180ms; }
+		#main .thumb h2, #main .thumb p { display: none !important; }
+
+		/* .image = the <a> link that poptrox fills with background-image */
+		#main .thumb .image {
+			position: absolute !important;
+			inset: 0 !important;
+			display: block !important;
+			width: 100% !important;
+			height: 100% !important;
+			background-size: cover !important;
+			background-position: center !important;
+			transition: transform .9s var(--ease) !important;
 			will-change: transform;
 		}
-		#main .thumb:hover > .image { transform: scale(1.05); }
+		#main .thumb .image img { display: none !important; }
+		#main .thumb:hover .image { transform: scale(1.06) !important; }
 
+		/* Gold border frame on hover */
 		#main .thumb::before {
-			content: '';
-			position: absolute; inset: 0;
-			border: 1px solid transparent;
-			transition: border-color .35s;
-			z-index: 2; pointer-events: none;
+			content: '' !important;
+			position: absolute !important; inset: 0 !important;
+			border: 1px solid transparent !important;
+			transition: border-color .45s !important;
+			z-index: 4 !important; pointer-events: none !important;
 		}
-		#main .thumb:hover::before { border-color: rgba(201,168,108,.3); }
+		#main .thumb:hover::before { border-color: rgba(201,168,108,.28) !important; }
 
+		/* Dark overlay + centered icon */
 		.thumb-ov {
-			position: absolute; inset: 0;
-			background: linear-gradient(to top, rgba(8,8,8,.6) 0%, transparent 55%);
-			opacity: 0;
-			transition: opacity .35s;
-			z-index: 1;
-			display: flex; align-items: flex-end; padding: 1.2rem;
+			position: absolute !important;
+			inset: 0 !important;
+			background: rgba(8,8,8,.35) !important;
+			opacity: 0 !important;
+			transition: opacity .4s !important;
+			z-index: 2 !important;
+			display: flex !important;
+			align-items: center !important;
+			justify-content: center !important;
+			pointer-events: none !important;
+		}
+		#main .thumb:hover .thumb-ov { opacity: 1 !important; }
+		.thumb-ov-icon {
+			width: 44px !important; height: 44px !important;
+			border: 1px solid rgba(255,255,255,.45) !important;
+			border-radius: 50% !important;
+			display: flex !important;
+			align-items: center !important;
+			justify-content: center !important;
+			color: rgba(255,255,255,.9) !important;
+			font-size: .78rem !important;
+			transform: scale(.7) !important;
+			transition: transform .45s var(--ease) !important;
+		}
+		#main .thumb:hover .thumb-ov-icon { transform: scale(1) !important; }
+
+		/* Subtle item number bottom-right */
+		.thumb-num {
+			position: absolute;
+			bottom: .9rem; right: 1rem;
+			font-family: var(--serif);
+			font-size: .7rem; font-weight: 300; letter-spacing: .12em;
+			color: rgba(237,232,224,.38);
+			z-index: 3;
+			opacity: 0; transform: translateY(5px);
+			transition: opacity .35s, transform .35s;
 			pointer-events: none;
 		}
-		#main .thumb:hover .thumb-ov { opacity: 1; }
-		.thumb-ov-icon {
-			width: 34px; height: 34px;
-			border: 1px solid rgba(255,255,255,.5);
-			border-radius: 50%;
-			display: flex; align-items: center; justify-content: center;
-			color: #fff; font-size: .75rem;
+		#main .thumb:hover .thumb-num { opacity: 1; transform: none; }
+
+		/* Mobile */
+		@media (max-width: 736px) {
+			#main { grid-template-columns: repeat(2, 1fr) !important; gap: 2px !important; }
+			#main .thumb { aspect-ratio: 1/1 !important; }
+			#main .thumb.ag-feat { grid-column: span 2 !important; aspect-ratio: 16/9 !important; }
 		}
 
 		/* ── BACK TO TOP ─────────────────────────────────────── */
@@ -831,73 +928,96 @@
 		</div>
 	</section>
 
-	<div class="sec-label"><span>Portafolio selecto</span></div>
+	<!-- PORTFOLIO INTRO -->
+	<div class="port-intro">
+		<div class="pi-left">
+			<div class="pi-rule"></div>
+			<div class="pi-eyebrow">
+				<span class="pi-num">13</span>
+				<span class="pi-label">Portafolio selecto</span>
+			</div>
+		</div>
+		<p class="pi-desc">Una selección de momentos capturados<br>con precisión y sensibilidad artística.</p>
+	</div>
 
 	<!-- GRID -->
 	<div id="main">
-		<article class="thumb">
-			<a href="images/fulls/35.jpg" class="image"><img loading="lazy" decoding="async" src="images/thumbs/35.jpg" alt="AG Photography" /></a>
+		<article class="thumb ag-feat">
+			<a href="images/fulls/35.jpg" class="image"><img loading="eager" fetchpriority="high" decoding="async" src="images/thumbs/35.jpg" alt="AG Photography" /></a>
 			<div class="thumb-ov"><div class="thumb-ov-icon"><i class="fas fa-expand-alt"></i></div></div>
+			<span class="thumb-num">01</span>
 			<h2></h2><p></p>
 		</article>
 		<article class="thumb">
 			<a href="images/fulls/01.jpg" class="image"><img loading="lazy" decoding="async" src="images/thumbs/01.jpg" alt="AG Photography" /></a>
 			<div class="thumb-ov"><div class="thumb-ov-icon"><i class="fas fa-expand-alt"></i></div></div>
+			<span class="thumb-num">02</span>
 			<h2></h2><p></p>
 		</article>
 		<article class="thumb">
 			<a href="images/fulls/02.jpg" class="image"><img loading="lazy" decoding="async" src="images/thumbs/02.jpg" alt="AG Photography" /></a>
 			<div class="thumb-ov"><div class="thumb-ov-icon"><i class="fas fa-expand-alt"></i></div></div>
+			<span class="thumb-num">03</span>
 			<h2></h2><p></p>
 		</article>
 		<article class="thumb">
 			<a href="images/fulls/03.jpg" class="image"><img loading="lazy" decoding="async" src="images/thumbs/03.jpg" alt="AG Photography" /></a>
 			<div class="thumb-ov"><div class="thumb-ov-icon"><i class="fas fa-expand-alt"></i></div></div>
+			<span class="thumb-num">04</span>
 			<h2></h2><p></p>
 		</article>
 		<article class="thumb">
 			<a href="images/fulls/04.jpg" class="image"><img loading="lazy" decoding="async" src="images/thumbs/04.jpg" alt="AG Photography" /></a>
 			<div class="thumb-ov"><div class="thumb-ov-icon"><i class="fas fa-expand-alt"></i></div></div>
+			<span class="thumb-num">05</span>
 			<h2></h2><p></p>
 		</article>
 		<article class="thumb">
 			<a href="images/fulls/05.jpg" class="image"><img loading="lazy" decoding="async" src="images/thumbs/05.jpg" alt="AG Photography" /></a>
 			<div class="thumb-ov"><div class="thumb-ov-icon"><i class="fas fa-expand-alt"></i></div></div>
+			<span class="thumb-num">06</span>
 			<h2></h2><p></p>
 		</article>
 		<article class="thumb">
 			<a href="images/fulls/06.jpg" class="image"><img loading="lazy" decoding="async" src="images/thumbs/06.jpg" alt="AG Photography" /></a>
 			<div class="thumb-ov"><div class="thumb-ov-icon"><i class="fas fa-expand-alt"></i></div></div>
+			<span class="thumb-num">07</span>
 			<h2></h2><p></p>
 		</article>
 		<article class="thumb">
 			<a href="images/fulls/07.jpg" class="image"><img loading="lazy" decoding="async" src="images/thumbs/07.jpg" alt="AG Photography" /></a>
 			<div class="thumb-ov"><div class="thumb-ov-icon"><i class="fas fa-expand-alt"></i></div></div>
+			<span class="thumb-num">08</span>
 			<h2></h2><p></p>
 		</article>
 		<article class="thumb">
 			<a href="images/fulls/08.jpg" class="image"><img loading="lazy" decoding="async" src="images/thumbs/08.jpg" alt="AG Photography" /></a>
 			<div class="thumb-ov"><div class="thumb-ov-icon"><i class="fas fa-expand-alt"></i></div></div>
+			<span class="thumb-num">09</span>
 			<h2></h2><p></p>
 		</article>
 		<article class="thumb">
 			<a href="images/fulls/09.jpg" class="image"><img loading="lazy" decoding="async" src="images/thumbs/09.jpg" alt="AG Photography" /></a>
 			<div class="thumb-ov"><div class="thumb-ov-icon"><i class="fas fa-expand-alt"></i></div></div>
+			<span class="thumb-num">10</span>
 			<h2></h2><p></p>
 		</article>
 		<article class="thumb">
 			<a href="images/fulls/10.jpg" class="image"><img loading="lazy" decoding="async" src="images/thumbs/10.jpg" alt="AG Photography" /></a>
 			<div class="thumb-ov"><div class="thumb-ov-icon"><i class="fas fa-expand-alt"></i></div></div>
+			<span class="thumb-num">11</span>
 			<h2></h2><p></p>
 		</article>
 		<article class="thumb">
 			<a href="images/fulls/11.jpg" class="image"><img loading="lazy" decoding="async" src="images/thumbs/11.jpg" alt="AG Photography" /></a>
 			<div class="thumb-ov"><div class="thumb-ov-icon"><i class="fas fa-expand-alt"></i></div></div>
+			<span class="thumb-num">12</span>
 			<h2></h2><p></p>
 		</article>
 		<article class="thumb">
 			<a href="images/fulls/12.jpg" class="image"><img loading="lazy" decoding="async" src="images/thumbs/12.jpg" alt="AG Photography" /></a>
 			<div class="thumb-ov"><div class="thumb-ov-icon"><i class="fas fa-expand-alt"></i></div></div>
+			<span class="thumb-num">13</span>
 			<h2></h2><p></p>
 		</article>
 	</div>
@@ -1339,6 +1459,25 @@ document.addEventListener('dragstart',   function(e){ if (e.target.tagName === '
 	document.addEventListener('visibilitychange', function(){
 		document.hidden ? stopCarousel() : startCarousel();
 	});
+})();
+
+/* ── GRID REVEAL ON SCROLL ───────────────────────────────── */
+(function(){
+	var items = document.querySelectorAll('#main .thumb');
+	if (!window.IntersectionObserver) {
+		items.forEach(function(el){ el.classList.add('vis'); });
+		return;
+	}
+	var io = new IntersectionObserver(function(entries){
+		entries.forEach(function(entry){
+			if (!entry.isIntersecting) return;
+			var el = entry.target;
+			el.classList.add('vis');
+			io.unobserve(el);
+			setTimeout(function(){ el.style.transitionDelay = ''; }, 950);
+		});
+	}, { threshold: 0.06, rootMargin: '0px 0px -30px 0px' });
+	items.forEach(function(el){ io.observe(el); });
 })();
 
 /* ── CTA REVEAL ON SCROLL ────────────────────────────────── */
