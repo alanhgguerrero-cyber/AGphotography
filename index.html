@@ -494,7 +494,7 @@
 		/* ── MODAL BASE ──────────────────────────────────────── */
 		.ag-m {
 			display: none;
-			position: fixed; inset: 0; z-index: 10000;
+			position: fixed; inset: 0; z-index: 10003;
 			align-items: center; justify-content: center;
 			padding: 1.25rem;
 		}
@@ -522,10 +522,12 @@
 			width: 44px; height: 44px;
 			border-radius: 50%;
 			border: 1px solid var(--border);
-			background: none;
+			background: rgba(8,8,8,.6);
+			backdrop-filter: blur(12px);
+			-webkit-backdrop-filter: blur(12px);
 			cursor: none;
 			transition: border-color .35s, background .35s, transform .55s var(--ease);
-			z-index: 5;
+			z-index: 2;
 			display: flex; align-items: center; justify-content: center;
 		}
 		.ag-m-x::before, .ag-m-x::after {
@@ -622,7 +624,7 @@
 
 		/* ── ALBUM VIEWER ────────────────────────────────────── */
 		#viewer {
-			position: fixed; inset: 0; z-index: 10001;
+			position: fixed; inset: 0; z-index: 10004;
 			background: rgba(5,5,5,.97);
 			backdrop-filter: blur(40px);
 			-webkit-backdrop-filter: blur(40px);
@@ -1064,8 +1066,8 @@
 <!-- ── MODAL: ABOUT ───────────────────────────────────────── -->
 <div id="aboutModal" class="ag-m" role="dialog" aria-modal="true" aria-label="Acerca de nosotros">
 	<div class="ag-m-bd" data-close="aboutModal"></div>
+	<button class="ag-m-x" data-close="aboutModal" aria-label="Cerrar"></button>
 	<div class="ag-m-box">
-		<button class="ag-m-x" data-close="aboutModal" aria-label="Cerrar"></button>
 		<div class="ag-m-top">
 			<div class="ag-m-eye">AG Photography</div>
 			<h2 class="ag-m-title">Una mirada<br>distinta</h2>
@@ -1104,8 +1106,8 @@
 <!-- ── MODAL: GALLERY ─────────────────────────────────────── -->
 <div id="galleryModal" class="ag-m" role="dialog" aria-modal="true" aria-label="Galería">
 	<div class="ag-m-bd" data-close="galleryModal"></div>
+	<button class="ag-m-x" data-close="galleryModal" aria-label="Cerrar"></button>
 	<div class="ag-m-box">
-		<button class="ag-m-x" data-close="galleryModal" aria-label="Cerrar"></button>
 		<div class="ag-m-top">
 			<div class="ag-m-eye">Portafolio completo</div>
 			<h2 class="ag-m-title">Galería</h2>
@@ -1130,8 +1132,8 @@
 <!-- ── MODAL: COTIZA ─────────────────────────────────────── -->
 <div id="cotizaModal" class="ag-m" role="dialog" aria-modal="true" aria-label="Cotización">
 	<div class="ag-m-bd" data-close="cotizaModal"></div>
+	<button class="ag-m-x" data-close="cotizaModal" aria-label="Cerrar"></button>
 	<div class="ag-m-box">
-		<button class="ag-m-x" data-close="cotizaModal" aria-label="Cerrar"></button>
 		<div class="ag-m-top">
 			<div class="ag-m-eye">Hablemos</div>
 			<h2 class="ag-m-title">Cotiza tu sesión</h2>
@@ -1534,37 +1536,46 @@ window.addEventListener('load', function(){
 
 /* ── POPTROX ZOOM + PAN ──────────────────────────────────── */
 (function(){
-	var minS = 1, maxS = 3, step = 0.15;
+	var minS = 1, maxS = 3.5, step = 0.18;
 	var isTouch = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
 
 	function setScale(img, s) {
 		s = Math.max(minS, Math.min(maxS, s));
-		var tx = parseFloat(img.attr('data-tx')) || 0;
-		var ty = parseFloat(img.attr('data-ty')) || 0;
-		img.css('transform', 'translate(' + tx.toFixed(1) + 'px,' + ty.toFixed(1) + 'px) scale(' + s.toFixed(2) + ')');
-		img.attr('data-zoom', s.toFixed(2));
+		img.css('transform', 'scale(' + s.toFixed(2) + ')');
+		img.attr('data-zoom', s);
 		img.css('cursor', s > 1 ? 'zoom-out' : 'zoom-in');
 		var pop = img.closest('.poptrox-popup');
 		if (s > 1) pop.addClass('is-zoomed');
-		else { pop.removeClass('is-zoomed'); img.attr({'data-tx':'0','data-ty':'0'}); }
+		else pop.removeClass('is-zoomed');
 	}
 
 	if (!isTouch) {
-		$(document).on('mousedown click', '.poptrox-popup .pic, .poptrox-popup .pic img', function(e){
+		/* prevent poptrox from navigating on click */
+		$(document).on('mousedown', '.poptrox-popup .pic img', function(e){
 			e.preventDefault(); e.stopImmediatePropagation();
 		});
-		$(document).on('mouseenter', '.poptrox-popup .pic img', function(){ setScale($(this), 2); });
-		$(document).on('mouseleave', '.poptrox-popup .pic img', function(){ setScale($(this), 1); });
+		/* click = toggle zoom 1 ↔ 2.5 */
+		$(document).on('click', '.poptrox-popup .pic img', function(e){
+			e.preventDefault(); e.stopImmediatePropagation();
+			var s = parseFloat($(this).attr('data-zoom')) || 1;
+			setScale($(this), s > 1 ? 1 : 2.5);
+		});
+		/* pan while zoomed — correct X+Y direction */
 		$(document).on('mousemove', '.poptrox-popup .pic', function(e){
 			var img = $(this).find('img');
 			var s = parseFloat(img.attr('data-zoom')) || 1;
 			if (s <= 1) return;
 			var r = this.getBoundingClientRect();
-			var ty = ((e.clientY - r.top) / r.height - 0.5) * 2 * (r.height * (s - 1)) / 2;
-			img.attr('data-ty', ty.toFixed(1));
-			img.css('transform', 'translate(0,' + ty.toFixed(1) + 'px) scale(' + s.toFixed(2) + ')');
+			var tx = (0.5 - (e.clientX - r.left) / r.width ) * r.width  * (s - 1) / s;
+			var ty = (0.5 - (e.clientY - r.top)  / r.height) * r.height * (s - 1) / s;
+			img.css('transform', 'scale(' + s.toFixed(2) + ') translate(' + tx.toFixed(1) + 'px,' + ty.toFixed(1) + 'px)');
+		});
+		/* reset zoom on mouse leave */
+		$(document).on('mouseleave', '.poptrox-popup .pic', function(){
+			setScale($(this).find('img'), 1);
 		});
 	}
+	/* wheel zoom */
 	$(document).on('wheel', '.poptrox-popup .pic img', function(e){
 		e.preventDefault();
 		setScale($(this), (parseFloat($(this).attr('data-zoom')) || 1) + (e.originalEvent.deltaY > 0 ? -step : step));
