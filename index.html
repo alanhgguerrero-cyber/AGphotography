@@ -3,7 +3,9 @@
 <head>
 	<title>AG Photography — Captura el momento</title>
 	<meta charset="utf-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<meta name="theme-color" content="#080808" />
+	<link rel="preload" as="image" href="images/thumbs/01.jpg" fetchpriority="high" />
 	<meta name="description" content="AG Photography — Fotografía de eventos, sesiones, bodas y XV años en Guadalajara. Capturamos momentos que duran toda una vida." />
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -29,9 +31,8 @@
 		/* ── RESET / BASE ────────────────────────────────────── */
 		*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 		html { scroll-behavior: smooth; overflow-x: hidden; }
-		body { overflow-x: hidden; }
-
 		body {
+			overflow-x: hidden;
 			background: var(--bg);
 			color: var(--text);
 			font-family: var(--sans);
@@ -39,10 +40,18 @@
 			font-size: 15px;
 			line-height: 1.6;
 			-webkit-font-smoothing: antialiased;
+			-moz-osx-font-smoothing: grayscale;
 			padding: 0 !important;
 			cursor: none;
 		}
 		@media (hover: none) { body { cursor: auto; } }
+		a, button { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+		@media (prefers-reduced-motion: reduce) {
+			*, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+			html { scroll-behavior: auto; }
+			#loader-line { animation: none; width: 100%; }
+			.scroll-hint-bar { animation: none; opacity: .5; }
+		}
 
 		/* ── GRAIN ───────────────────────────────────────────── */
 		body::after {
@@ -876,6 +885,62 @@
 			#agCta { padding: 5rem 1.5rem 4rem; }
 		}
 
+		/* ── MOBILE MENU ────────────────────────────────────── */
+		.h-burger {
+			font-size: 0 !important;
+			letter-spacing: 0 !important;
+			text-transform: none !important;
+			color: transparent !important;
+			padding: 0 !important;
+			display: none;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+			gap: 5px;
+			width: 40px; height: 40px;
+			background: none; border: none;
+			cursor: none; flex-shrink: 0;
+		}
+		.h-burger::after { display: none !important; }
+		.h-burger span {
+			display: block; width: 20px; height: 1px;
+			background: var(--muted);
+			transition: transform .3s var(--ease), opacity .25s, background .25s;
+			transform-origin: center;
+		}
+		.h-burger.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); background: var(--text); }
+		.h-burger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+		.h-burger.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); background: var(--text); }
+		@media (max-width: 736px) { .h-burger { display: flex; } }
+
+		#mobileMenu {
+			display: none;
+			position: fixed; inset: 0;
+			background: rgba(8,8,8,.97);
+			backdrop-filter: blur(24px);
+			-webkit-backdrop-filter: blur(24px);
+			z-index: 10001;
+			flex-direction: column;
+			align-items: center; justify-content: center;
+			gap: 2rem;
+		}
+		#mobileMenu.open { display: flex; }
+		.m-menu-link {
+			font-family: var(--serif);
+			font-size: clamp(2rem, 8vw, 2.6rem);
+			font-weight: 300; letter-spacing: .06em;
+			color: rgba(237,232,224,.65);
+			background: none; border: none;
+			cursor: none; padding: .2rem 0;
+			transition: color .3s;
+		}
+		.m-menu-link:hover { color: var(--accent); }
+		.m-menu-rule { width: 1px; height: 22px; background: var(--border); }
+
+		/* Overscroll containment in modals */
+		.ag-m-box { overscroll-behavior: contain; }
+		#viewer { overscroll-behavior: contain; }
+
 		/* ── POPTROX OVERRIDES ───────────────────────────────── */
 		.poptrox-popup {
 			background: rgba(6,6,6,.97) !important;
@@ -910,8 +975,20 @@
 		<a href="#" id="aboutBtn">Nosotros</a>
 		<a href="#" id="galleryBtn">Galería</a>
 		<a href="#" id="cotizaBtn" class="h-cta">Cotiza</a>
+		<button class="h-burger" id="hBurger" aria-label="Menú" aria-expanded="false">
+			<span></span><span></span><span></span>
+		</button>
 	</nav>
 </header>
+
+<!-- Mobile menu -->
+<div id="mobileMenu" role="dialog" aria-modal="true" aria-label="Menú principal">
+	<button class="m-menu-link" id="mAboutBtn">Nosotros</button>
+	<div class="m-menu-rule"></div>
+	<button class="m-menu-link" id="mGalleryBtn">Galería</button>
+	<div class="m-menu-rule"></div>
+	<button class="m-menu-link" id="mCotizaBtn">Cotizar</button>
+</div>
 
 <!-- ── WRAPPER ────────────────────────────────────────────── -->
 <div id="wrapper">
@@ -1279,6 +1356,14 @@ document.addEventListener('click', function(e) {
 /* ── UNIFIED KEYBOARD HANDLER ────────────────────────────── */
 document.addEventListener('keydown', function(e) {
 	if (e.key === 'Escape') {
+		var mMenu = document.getElementById('mobileMenu');
+		if (mMenu && mMenu.classList.contains('open')) {
+			var hb = document.getElementById('hBurger');
+			mMenu.classList.remove('open');
+			if (hb) { hb.classList.remove('open'); hb.setAttribute('aria-expanded', 'false'); }
+			document.body.style.overflow = '';
+			return;
+		}
 		if (isViewerOpen()) closeViewer(false);
 		else closeAllModals();
 		return;
@@ -1301,6 +1386,36 @@ bindOpen(['galleryBtn','galleryBtn2'], function(){ renderAlbums(); openModal('ga
 bindOpen(['cotizaBtn','cotizaBtn2','ctaCotizaBtn','ftrCotizaBtn'], function(){ openModal('cotizaModal'); });
 bindOpen(['ftrAboutBtn'], function(){ openModal('aboutModal'); });
 bindOpen(['ftrGalleryBtn'], function(){ renderAlbums(); openModal('galleryModal'); });
+
+/* ── MOBILE HAMBURGER ────────────────────────────────────── */
+(function(){
+	var burger = document.getElementById('hBurger');
+	var menu = document.getElementById('mobileMenu');
+	if (!burger || !menu) return;
+	function openMobile() {
+		burger.classList.add('open');
+		burger.setAttribute('aria-expanded', 'true');
+		menu.classList.add('open');
+		document.body.style.overflow = 'hidden';
+	}
+	function closeMobile() {
+		burger.classList.remove('open');
+		burger.setAttribute('aria-expanded', 'false');
+		menu.classList.remove('open');
+		if (!document.querySelector('.ag-m.open') && !isViewerOpen()) {
+			document.body.style.overflow = '';
+		}
+	}
+	burger.addEventListener('click', function() {
+		menu.classList.contains('open') ? closeMobile() : openMobile();
+	});
+	var mAbout = document.getElementById('mAboutBtn');
+	var mGallery = document.getElementById('mGalleryBtn');
+	var mCotiza = document.getElementById('mCotizaBtn');
+	if (mAbout) mAbout.addEventListener('click', function(){ closeMobile(); openModal('aboutModal'); });
+	if (mGallery) mGallery.addEventListener('click', function(){ closeMobile(); renderAlbums(); openModal('galleryModal'); });
+	if (mCotiza) mCotiza.addEventListener('click', function(){ closeMobile(); openModal('cotizaModal'); });
+})();
 
 /* ── GALLERY ALBUMS ──────────────────────────────────────── */
 var albumsRendered = false;
@@ -1441,10 +1556,8 @@ document.addEventListener('dragstart',   function(e){ if (e.target.tagName === '
 	var a = document.querySelector('.intro-bg-a');
 	var b = document.querySelector('.intro-bg-b');
 	if (!a || !b) return;
-	var heroImgs = ['images/fulls/01.jpg','images/fulls/08.jpg','images/fulls/16.jpg','images/fulls/03.jpg'];
+	var heroImgs = ['images/thumbs/01.jpg','images/thumbs/08.jpg','images/thumbs/16.jpg','images/thumbs/03.jpg'];
 	var idx = 0, showA = true, timer = null;
-
-	heroImgs.forEach(function(src){ new Image().src = src; });
 
 	a.style.backgroundImage = "url('" + heroImgs[0] + "')";
 	a.classList.add('on');
