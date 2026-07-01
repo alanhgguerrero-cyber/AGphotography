@@ -1536,52 +1536,66 @@ window.addEventListener('load', function(){
 
 /* ── POPTROX ZOOM + PAN ──────────────────────────────────── */
 (function(){
-	var minS = 1, maxS = 3.5, step = 0.18;
+	var MIN = 1, MAX = 4, STEP = 0.25;
 	var isTouch = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
+	var mx = 0, my = 0;
 
-	function setScale(img, s) {
-		s = Math.max(minS, Math.min(maxS, s));
-		img.css('transform', 'scale(' + s.toFixed(2) + ')');
+	function gz(img) { return parseFloat(img.attr('data-zoom')) || 1; }
+
+	/* translate(tx,ty) scale(s) — tx/ty in screen px, no (s-1)/s distortion */
+	function applyPan(img, s, cx, cy) {
+		var r = img.closest('.pic')[0].getBoundingClientRect();
+		var tx = (cx - r.left - r.width  / 2) * (1 - s);
+		var ty = (cy - r.top  - r.height / 2) * (1 - s);
+		img.css('transform',
+			'translate(' + tx.toFixed(1) + 'px,' + ty.toFixed(1) + 'px) scale(' + s.toFixed(2) + ')');
+	}
+
+	function setZoom(img, s) {
+		s = Math.max(MIN, Math.min(MAX, s));
 		img.attr('data-zoom', s);
-		img.css('cursor', s > 1 ? 'zoom-out' : 'zoom-in');
-		var pop = img.closest('.poptrox-popup');
-		if (s > 1) pop.addClass('is-zoomed');
-		else pop.removeClass('is-zoomed');
+		if (s <= 1) {
+			img.css('transform', 'scale(1)').css('cursor', 'zoom-in');
+			img.closest('.poptrox-popup').removeClass('is-zoomed');
+		} else {
+			applyPan(img, s, mx, my);
+			img.css('cursor', 'zoom-out');
+			img.closest('.poptrox-popup').addClass('is-zoomed');
+		}
 	}
 
 	if (!isTouch) {
-		/* prevent poptrox from navigating on click */
-		$(document).on('mousedown', '.poptrox-popup .pic img', function(e){
-			e.preventDefault(); e.stopImmediatePropagation();
-		});
-		/* click = toggle zoom 1 ↔ 2.5 */
-		$(document).on('click', '.poptrox-popup .pic img', function(e){
-			e.preventDefault(); e.stopImmediatePropagation();
-			var s = parseFloat($(this).attr('data-zoom')) || 1;
-			setScale($(this), s > 1 ? 1 : 2.5);
-		});
-		/* pan while zoomed — correct X+Y direction */
-		$(document).on('mousemove', '.poptrox-popup .pic', function(e){
+		$(document).on('mousemove', '.poptrox-popup .pic', function(e) {
+			mx = e.clientX; my = e.clientY;
 			var img = $(this).find('img');
-			var s = parseFloat(img.attr('data-zoom')) || 1;
-			if (s <= 1) return;
-			var r = this.getBoundingClientRect();
-			var tx = (0.5 - (e.clientX - r.left) / r.width ) * r.width  * (s - 1) / s;
-			var ty = (0.5 - (e.clientY - r.top)  / r.height) * r.height * (s - 1) / s;
-			img.css('transform', 'scale(' + s.toFixed(2) + ') translate(' + tx.toFixed(1) + 'px,' + ty.toFixed(1) + 'px)');
+			var s = gz(img);
+			if (s > 1) applyPan(img, s, mx, my);
 		});
-		/* reset zoom on mouse leave */
-		$(document).on('mouseleave', '.poptrox-popup .pic', function(){
-			setScale($(this).find('img'), 1);
+		$(document).on('mousedown', '.poptrox-popup .pic img', function(e) {
+			e.preventDefault(); e.stopImmediatePropagation();
+		});
+		$(document).on('click', '.poptrox-popup .pic img', function(e) {
+			e.preventDefault(); e.stopImmediatePropagation();
+			mx = e.clientX; my = e.clientY;
+			setZoom($(this), gz($(this)) > 1 ? 1 : 2.5);
 		});
 	}
-	/* wheel zoom */
-	$(document).on('wheel', '.poptrox-popup .pic img', function(e){
+
+	$(document).on('wheel', '.poptrox-popup .pic', function(e) {
 		e.preventDefault();
-		setScale($(this), (parseFloat($(this).attr('data-zoom')) || 1) + (e.originalEvent.deltaY > 0 ? -step : step));
+		mx = e.clientX; my = e.clientY;
+		var img = $(this).find('img');
+		setZoom(img, gz(img) + (e.originalEvent.deltaY < 0 ? STEP : -STEP));
 	});
-	$(document).on('click', '.poptrox-popup .nav-previous, .poptrox-popup .nav-next', function(e){ e.stopPropagation(); });
-	$(document).on('close.poptrox', function(){ $('.poptrox-popup .pic img').each(function(){ setScale($(this), 1); }); });
+
+	$(document).on('click', '.poptrox-popup .nav-previous, .poptrox-popup .nav-next', function(e) {
+		e.stopPropagation();
+		setZoom($(this).closest('.poptrox-popup').find('.pic img'), 1);
+	});
+
+	$(document).on('close.poptrox', function() {
+		$('.poptrox-popup .pic img').each(function() { setZoom($(this), 1); });
+	});
 })();
 </script>
 </body>
