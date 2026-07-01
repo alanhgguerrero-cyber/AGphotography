@@ -752,9 +752,12 @@
 			padding: 7rem 2rem 5rem;
 			text-align: center;
 			position: relative;
-			overflow: hidden;
 			background: var(--surface);
 			border-top: 1px solid var(--border);
+		}
+		.cta-wm-clip {
+			position: absolute; inset: 0;
+			overflow: hidden; pointer-events: none;
 		}
 		#agCta::before {
 			content: '';
@@ -800,6 +803,7 @@
 		.cta-btn-wrap {
 			opacity: 0; transform: translateY(8px);
 			transition: opacity .9s var(--ease) .42s, transform .9s var(--ease) .42s;
+			padding-bottom: 4px;
 		}
 		#agCta.in .cta-eye,
 		#agCta.in .cta-h,
@@ -1028,7 +1032,7 @@
 
 <!-- ── FOOTER CTA ─────────────────────────────────────────── -->
 <section id="agCta">
-	<span class="cta-wm" aria-hidden="true">Photography</span>
+	<div class="cta-wm-clip"><span class="cta-wm" aria-hidden="true">Photography</span></div>
 	<div class="cta-inner">
 		<span class="cta-eye">Comencemos</span>
 		<h2 class="cta-h">¿Listo para crear<br><i>algo eterno?</i></h2>
